@@ -1,0 +1,30 @@
+{% extends "layout.html" %}
+
+{% block title %} Home {% endblock %}
+
+{% block main %}
+    <div class="form-div">
+        <form method="post">
+            <h2 style="text-align: center; text-decoration: underline;" class="my-4">User Data Collection Form</h2>
+            <div class="form-name my-4">
+                <label for="name" class="form-label">Full Name</label>
+                <input type="text" class="form-control" id="name" placeholder="Ex: John Doe" required>
+            </div>
+            <div class="form-email my-4">
+                <label for="email" class="form-label">Email Address</label>
+                <input type="email" class="form-control" id="email" placeholder="name@domain.com">
+            </div>
+            <div class="form-phone my-4">
+                <label for="phone" class="form-label">Phone Number</label>
+                <input type="tel" class="form-control" id="phone" placeholder="+91" minlength="10" maxlength="10">
+            </div>
+            <div class="form-address my-4">
+                <label for="address" class="form-label">Home Address</label>
+                <textarea class="form-control" id="address" rows="3"></textarea>
+            </div>
+            <div class="form-button">
+                <button type="submit" class="btn btn-outline-success">Submit</button>
+            </div>
+        </form>
+    </div>
+{% endblock %}
