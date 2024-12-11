@@ -63,16 +63,20 @@ def index():
             perms = permissions.find_one({
                 '_id': ObjectId(session['id'])
             })
-
-            data = {
-                '_id': ObjectId(session['id']),
-                'name': name,
-                'email': email if perms['email'] else None,
-                'phone': phone if perms['phone'] else None,
-                'address': address if perms['address'] else None,
-            }
-
-            details.insert_one(data)
+            
+            details.update_one(
+            {'_id': ObjectId(session['id'])},
+            {
+                '$set': {
+                    'name': name,
+                    'email': email if perms['email'] else None,
+                    'phone': phone if perms['phone'] else None,
+                    'address': address if perms['address'] else None,
+                }
+            },
+            upsert=True  # If no document matches, create a new one
+        )
+            
             return redirect(url_for('index'))
 
     perms = permissions.find_one({
@@ -102,12 +106,11 @@ def register():
         }
 
         login_info.insert_one(data)
+        temp = login_info.find_one(data)
 
-        #Set Permissions
-        
         #Set Default Perms
         perms = {
-            '_id': ObjectId(session['id']),
+            '_id': temp['_id'],
             'email': False,
             'phone': False,
             'address': False,
@@ -150,7 +153,9 @@ def logout():
 @app.route("/permissions", methods=["GET", "POST"])
 @login_required
 def permissions():
-    return redirect(url_for('permissions'))
+    if request.method == "POST":
+        pass
+    return render_template('permissions.html')
 
 if __name__ == "__main__":
     app.run(debug=True)

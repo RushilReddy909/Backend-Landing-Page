@@ -2,11 +2,17 @@
     font-family: Verdana, Geneva, Tahoma, sans-serif
 }
 
+header {
+    background-color: black;
+    border-bottom: 3px solid #C33149;
+}
+
 main {
     display: flex;
     align-items: center;
     justify-content: center;
-    min-height: 90vh
+    min-height: 90vh;
+    background-color: #EDF2F4;
 }
 
 .center-flex {
@@ -41,8 +47,9 @@ main {
     margin: 0 15px;
 }
 
-#logout-btn {
+#logout-btn, #login-btn, #register-btn {
     background-color: #F5CB5C;
     border-radius: 20px;
     color: #242423;
+    padding: 5px 20px;
 }
