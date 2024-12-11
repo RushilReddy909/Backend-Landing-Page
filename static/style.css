@@ -6,6 +6,13 @@ main {
     display: flex;
     align-items: center;
     justify-content: center;
+    min-height: 90vh
+}
+
+.center-flex {
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .form-div {
@@ -26,6 +33,6 @@ main {
 
 .form-button > button {
     font-weight: bold;
-    width: 35%;
+    /* width: 35%; */
     border-radius: 20px;
 }
