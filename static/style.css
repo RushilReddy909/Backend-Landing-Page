@@ -36,3 +36,13 @@ main {
     /* width: 35%; */
     border-radius: 20px;
 }
+
+.nav-item {
+    margin: 0 15px;
+}
+
+#logout-btn {
+    background-color: #F5CB5C;
+    border-radius: 20px;
+    color: #242423;
+}

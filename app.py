@@ -21,31 +21,71 @@ users = client["users"]
 @app.route("/", methods=["GET", "POST"])
 @login_required
 def index():
+    permissions = users['permissions']
+
     if request.method == "POST":
-        name = request.form["name"]
-        email = request.form["email"]
-        phone = request.form["phone"]
-        address = request.form["address"]
+        if request.form["form-type"] == "modal-form":
+            perms = permissions.find_one({
+                '_id': ObjectId(session['id'])
+            })
 
-        details = users['details']
+            check_email = True if "check-email" in request.form and request.form["check-email"] == 'yes' else False
+            check_phone = True if "check-phone" in request.form and request.form["check-phone"] == 'yes' else False
+            check_address = True if "check-address" in request.form and request.form["check-address"] == 'yes' else False
 
-        #Validation TODO
-           
 
-        #Update to Database
-        data = {
-            'name': name,
-            'email': email,
-            'phone': phone,
-            'address': address,
-        }
+            updated_data = {
+                '$set': {
+                    'email': check_email,
+                    'phone': check_phone,
+                    'address': check_address,
+                    'first': False,
+                }
+            }
 
-        details.insert_one(data)
+            permissions.update_one(
+                {'_id': ObjectId(session['id'])},
+                updated_data,
+            )
 
-    return render_template("index.html")
+        elif request.form["form-type"] == "normal-form":  
+            name = request.form["name"]
+            email = request.form["email"]
+            phone = request.form["phone"]
+            address = request.form["address"]
 
-@app.route("/signup", methods=["GET", "POST"])
-def signup():
+            details = users['details']
+
+            #Validation TODO
+            
+
+            #Update to Database
+            perms = permissions.find_one({
+                '_id': ObjectId(session['id'])
+            })
+
+            data = {
+                '_id': ObjectId(session['id']),
+                'name': name,
+                'email': email if perms['email'] else None,
+                'phone': phone if perms['phone'] else None,
+                'address': address if perms['address'] else None,
+            }
+
+            details.insert_one(data)
+            return redirect(url_for('index'))
+
+    perms = permissions.find_one({
+        '_id': ObjectId(session['id'])
+    })
+
+    showModal = False
+    if perms['first']:
+        showModal = True
+    return render_template("index.html", showModal=showModal)
+
+@app.route("/register", methods=["GET", "POST"])
+def register():
     if request.method == "POST":
         username = request.form["username"]
         password = request.form["password"]
@@ -62,9 +102,24 @@ def signup():
         }
 
         login_info.insert_one(data)
+
+        #Set Permissions
+        
+        #Set Default Perms
+        perms = {
+            '_id': ObjectId(session['id']),
+            'email': False,
+            'phone': False,
+            'address': False,
+            'first': True,
+        }
+
+        permissions = users['permissions']
+        permissions.insert_one(perms)
+
         return redirect(url_for('login'))
 
-    return render_template("signup.html")
+    return render_template("register.html")
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
@@ -85,6 +140,17 @@ def login():
         return redirect(url_for('index'))
 
     return render_template("login.html")
+
+@app.route("/logout")
+@login_required
+def logout():
+    session.pop('id')
+    return redirect(url_for('login'))
+
+@app.route("/permissions", methods=["GET", "POST"])
+@login_required
+def permissions():
+    return redirect(url_for('permissions'))
 
 if __name__ == "__main__":
     app.run(debug=True)
