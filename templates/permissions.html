@@ -1,7 +1,31 @@
-{% extends "layout.html" %}
-
-{% block title %} Set Permissions {% endblock %}
-
-{% block main %}
-    
+{% extends "layout.html" %} {% block title %} Set Permissions {% endblock %} {%
+block main %}
+<div>
+  <h2>Change Permissions</h2>
+  <p class="text-info">Permissions you chose to share</p>
+  <div>
+    <div class="form-check form-switch my-2">
+      <input type="checkbox" class="form-check-input" role="switch"
+      id="switch-email" {% if perms['email'] %} checked {% endif %} />
+      <label class="form-check-label" for="check-email">Email</label>
+    </div>
+    <div class="form-check form-switch my-2">
+      <input type="checkbox" class="form-check-input" role="switch"
+      id="switch-phone" {% if perms['phone'] %} checked {% endif %} />
+      <label class="form-check-label" for="check-phone">Phone</label>
+    </div>
+    <div class="form-check form-switch my-2">
+      <input type="checkbox" class="form-check-input" role="switch"
+      id="switch-address" {% if perms['address'] %} checked {% endif %} />
+      <label class="form-check-label" for="check-address">Address</label>
+    </div>
+  </div>
+</div>
+<div
+  id="toast-container"
+  class="position-fixed bottom-0 end-0 p-3"
+  style="z-index: 1055"
+>
+  <!-- Toasts will be dynamically added here -->
+</div>
 {% endblock %}

@@ -3,65 +3,75 @@
 {% block title %} Home {% endblock %}
 
 {% block main %}
-    {% if showModal %}
-    <div class="modal fade" id="form-modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-          <div class="modal-content">
+{% if showModal %}
+<div class="modal fade" id="form-modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
             <div class="modal-header">
-              <h5 class="modal-title fs-5" id="exampleModalLabel">Review Permissions</h5>
-              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <h5 class="modal-title fs-5" id="exampleModalLabel">Review Permissions</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-              <p>This is your first time logging in. Please review the permissions and provide the necessary details.</p>
-              <form method="post">
-                  <div class="form-check my-2">
-                      <input type="checkbox" class="form-check-input" id="check-email" name="check-email" value="yes">
-                      <label class="form-check-label" for="check-email">Email</label>
-                  </div>
-                  <div class="form-check my-2">
-                      <input type="checkbox" class="form-check-input" id="check-phone" name="check-phone" value="yes">
-                      <label class="form-check-label" for="check-phone">Phone</label>
-                  </div>
-                  <div class="form-check my-2">
-                      <input type="checkbox" class="form-check-input" id="check-address" name="check-address" value="yes">
-                      <label class="form-check-label" for="check-address">Address</label>
-                  </div>
-                  <p class="text-secondary">You can always change these from <a href="{{url_for('permissions')}}"> Permissions</a></p>
-                  <div class="modal-footer">
-                    <button type="submit" name="form-type" value="modal-form" class="btn btn-info">Save</button>
-                  </div>
-              </form>
+                <p>This is your first time logging in. Please review the permissions and provide the necessary details.
+                </p>
+                <p class="text-warning">The following details will be shared.</p>
+                <form method="post">
+                    <div class="form-check form-switch my-2">
+                        <input type="checkbox" class="form-check-input" role="switch" id="check-email"
+                            name="check-email" value="yes">
+                        <label class="form-check-label" for="check-email">Email</label>
+                    </div>
+                    <div class="form-check form-switch my-2">
+                        <input type="checkbox" class="form-check-input" role="switch" id="check-phone"
+                            name="check-phone" value="yes">
+                        <label class="form-check-label" for="check-phone">Phone</label>
+                    </div>
+                    <div class="form-check form-switch my-2">
+                        <input type="checkbox" class="form-check-input" role="switch" id="check-address"
+                            name="check-address" value="yes">
+                        <label class="form-check-label" for="check-address">Address</label>
+                    </div>
+                    <p class="text-secondary">You can always change these from <a href="{{url_for('permissions')}}">
+                            Permissions</a></p>
+                    <div class="modal-footer">
+                        <button type="submit" name="form-type" value="modal-form" class="btn btn-info">Save</button>
+                    </div>
+                </form>
             </div>
-          </div>
         </div>
-      </div>
-    <script>
-        const myModal = new bootstrap.Modal(document.getElementById('form-modal'));
-        myModal.show();
-    </script>
-    {% endif %}
-    <div class="form-div">
-        <form method="post">
-            <h2 style="text-align: center; text-decoration: underline;" class="my-4">User Data Collection Form</h2>
-            <div class="form-name my-4">
-                <label for="name" class="form-label">Full Name <span style="color: red;">*</span></label>
-                <input type="text" class="form-control" id="name" placeholder="Ex: John Doe" required name="name">
-            </div>
-            <div class="form-email my-4">
-                <label for="email" class="form-label">Email Address</label>
-                <input type="email" class="form-control" id="email" placeholder="name@domain.com" name="email">
-            </div>
-            <div class="form-phone my-4">
-                <label for="phone" class="form-label">Phone Number</label>
-                <input type="tel" class="form-control" id="phone" placeholder="+91" minlength="10" maxlength="10" name="phone">
-            </div>
-            <div class="form-address my-4">
-                <label for="address" class="form-label">Home Address</label>
-                <textarea class="form-control" id="address" rows="3" name="address"></textarea>
-            </div>
-            <div class="form-button">
-                <button type="submit" name="form-type" value="normal-form" style="width: 35%;" class="btn btn-outline-success">Submit</button>
-            </div>
-        </form>
     </div>
+</div>
+<script>
+    const myModal = new bootstrap.Modal(document.getElementById('form-modal'));
+    myModal.show();
+</script>
+{% endif %}
+<div class="form-div">
+    <form method="post">
+        <h2 style="text-align: center; text-decoration: underline;" class="my-4">User Data Collection Form</h2>
+        <div class="form-name my-4">
+            <label for="name" class="form-label">Full Name <span style="color: red;">*</span></label>
+            <input type="text" class="form-control" id="name" placeholder="Ex: John Doe" required name="name">
+        </div>
+        <div class="form-email my-4">
+            <label for="email" class="form-label">Email Address</label>
+            <input type="email" class="form-control" id="email" placeholder="name@domain.com" {% if 'email' in perms and
+                perms['email'] %}required{% endif %} name="email">
+        </div>
+        <div class="form-phone my-4">
+            <label for="phone" class="form-label">Phone Number</label>
+            <input type="tel" class="form-control" id="phone" placeholder="+91" {% if 'phone' in perms and
+                perms['phone'] %}required{% endif %} minlength="10" maxlength="10" name="phone">
+        </div>
+        <div class="form-address my-4">
+            <label for="address" class="form-label">Home Address</label>
+            <textarea class="form-control" id="address" rows="3" name="address" {% if 'address' in perms and
+                perms['address'] %}required{% endif %}></textarea>
+        </div>
+        <div class="form-button">
+            <button type="submit" name="form-type" value="normal-form" style="width: 35%;"
+                class="btn btn-outline-success">Submit</button>
+        </div>
+    </form>
+</div>
 {% endblock %}

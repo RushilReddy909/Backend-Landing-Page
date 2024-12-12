@@ -1,6 +1,6 @@
 from datetime import timedelta
 import os
-from flask import Flask, render_template, session, request, redirect, flash, get_flashed_messages, url_for
+from flask import Flask, jsonify, render_template, session, request, redirect, flash, get_flashed_messages, url_for
 from dotenv import load_dotenv
 from pymongo import MongoClient
 from helper import check_email, login_required
@@ -48,6 +48,8 @@ def index():
                 updated_data,
             )
 
+            return redirect(url_for('index'))
+
         elif request.form["form-type"] == "normal-form":  
             name = request.form["name"]
             email = request.form["email"]
@@ -63,7 +65,7 @@ def index():
             perms = permissions.find_one({
                 '_id': ObjectId(session['id'])
             })
-            
+
             details.update_one(
             {'_id': ObjectId(session['id'])},
             {
@@ -77,7 +79,7 @@ def index():
             upsert=True  # If no document matches, create a new one
         )
             
-            return redirect(url_for('index'))
+        return redirect(url_for('index'))
 
     perms = permissions.find_one({
         '_id': ObjectId(session['id'])
@@ -86,7 +88,7 @@ def index():
     showModal = False
     if perms['first']:
         showModal = True
-    return render_template("index.html", showModal=showModal)
+    return render_template("index.html", showModal=showModal, perms=perms)
 
 @app.route("/register", methods=["GET", "POST"])
 def register():
@@ -150,12 +152,63 @@ def logout():
     session.pop('id')
     return redirect(url_for('login'))
 
-@app.route("/permissions", methods=["GET", "POST"])
+@app.route("/permissions", methods=["GET"])
 @login_required
 def permissions():
-    if request.method == "POST":
-        pass
-    return render_template('permissions.html')
+    perms = users['permissions'].find_one({"_id": ObjectId(session["id"])})
+
+    return render_template('permissions.html', perms=perms)
+
+@app.route("/update_perm", methods=["POST"])
+@login_required
+def update_perm():
+    try:
+        #Validation of post request
+        if "field" not in request.form or "action" not in request.form:
+            return jsonify(success=False, message="Missing required parameters"), 400
+
+        user_id = ObjectId(session["id"])
+        field = request.form["field"]
+        action = request.form["action"]
+
+        if action == "revoke":
+            # Update permissions
+            users["permissions"].update_one(
+                {"_id": user_id},
+                {"$set": {field: False}}
+            )
+
+            # Update details
+            users["details"].update_one(
+                {"_id": user_id},
+                {"$set": {field: None}}
+            )
+
+            return jsonify(success=True), 200
+        elif action == "grant":
+            if "value" not in request.form:
+                return jsonify(success=False, message="Missing Parameters"), 400
+            
+            value = request.form["value"]
+
+            #Validation of field
+
+            users["permissions"].update_one(
+                {"_id": user_id},
+                {'$set': {field: True}},
+            )
+
+            users["details"].update_one(
+                {"_id": user_id},
+                {'$set': {field: value}}
+            )
+
+            return jsonify(success=True), 200
+
+        else:
+            return jsonify(success=False, message="Invalid action"), 400
+    except Exception as e:
+        return jsonify(success=False, message=str(e)), 500
 
 if __name__ == "__main__":
     app.run(debug=True)
