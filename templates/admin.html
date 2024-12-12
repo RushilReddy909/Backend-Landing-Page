@@ -1,0 +1,34 @@
+{% extends "layout.html" %}
+
+{% block title %} Administrator {% endblock %}
+
+{% block main %}
+    <div class="w-75">
+        <div class="text-center mb-5">
+            <h1 style="color: #C33149;">Data Points Table</h1>
+            <p class="text-secondary">Total Entries: {{len}}</p>
+        </div>
+        <div class="table-responsive d-flex justify-content-center">
+            <table class="table-bordered ">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Contact Number</th>
+                        <th>Address</th>
+                    </tr>
+                </thead>
+                <tbody class="table-group-divider">
+                    {% for details in table_data %}
+                        <tr>
+                            <td style="width: 20%;">{{details.name if details.name else 'N/A'}}</td>
+                            <td style="width: 25%;">{{details.email if details.email else 'N/A'}}</td>
+                            <td style="width: 15%;">+91 {{details.phone if details.phone else 'N/A'}}</td>
+                            <td style="width: 40%;">{{details.address if details.address else 'N/A'}}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}

@@ -3,8 +3,9 @@ import os
 from flask import Flask, jsonify, render_template, session, request, redirect, flash, get_flashed_messages, url_for
 from dotenv import load_dotenv
 from pymongo import MongoClient
-from helper import check_email, login_required
+from helper import login_required, admin_required
 from bson import ObjectId
+from werkzeug.security import check_password_hash, generate_password_hash
 
 load_dotenv() #Load all .env variables
 
@@ -92,6 +93,9 @@ def index():
 
 @app.route("/register", methods=["GET", "POST"])
 def register():
+    if 'id' in session:
+        return redirect(url_for('index'))
+
     if request.method == "POST":
         username = request.form["username"]
         password = request.form["password"]
@@ -105,6 +109,7 @@ def register():
         data = {
             'username': username,
             'password': password,
+            'role': "user",
         }
 
         login_info.insert_one(data)
@@ -128,6 +133,9 @@ def register():
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
+    if 'id' in session:
+        return redirect(url_for('index'))
+
     if request.method == "POST":
         username = request.form["username"]
         password = request.form["password"]
@@ -209,6 +217,14 @@ def update_perm():
             return jsonify(success=False, message="Invalid action"), 400
     except Exception as e:
         return jsonify(success=False, message=str(e)), 500
+    
+@app.route('/admin')
+@admin_required
+def admin():
+    details = users['details']
+
+    table_data = list(details.find({}, {'name': 1, 'email': 1, 'phone': 1, 'address': 1}))
+    return render_template('admin.html', table_data=table_data, len=len(table_data))
 
 if __name__ == "__main__":
     app.run(debug=True)
