@@ -60,6 +60,10 @@ def index():
             details = users['details']
 
             #Validation TODO
+            perms = permissions.find_one({
+                '_id': ObjectId(session['id'])
+            })
+
             if perms['email'] and not is_valid_email(email):
                 flash("Invalid email provided", "danger")
                 return redirect(url_for('index'))
@@ -73,10 +77,6 @@ def index():
                 return redirect(url_for('index'))
 
             #Update to Database
-            perms = permissions.find_one({
-                '_id': ObjectId(session['id'])
-            })
-
             details.update_one(
             {'_id': ObjectId(session['id'])},
             {
@@ -275,4 +275,4 @@ def admin():
     return render_template('admin.html', table_data=table_data, len=len(table_data))
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run()
