@@ -248,6 +248,12 @@ def update_perm():
             #Validation of field
             if not value or not value.strip():
                 return jsonify(success=False, message="Provide a valid value"), 400
+            
+            if field == 'email' and not is_valid_email(value):
+                return jsonify(success=False, message="Invalid Email provided"), 400
+            
+            if field == 'phone' and (len(value) != 10 or not value.isdigit()):
+                return jsonify(success=False, message="Invalid Phone number provided"), 400
 
             users["permissions"].update_one(
                 {"_id": user_id},
