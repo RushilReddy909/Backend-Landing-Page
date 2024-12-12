@@ -51,17 +51,6 @@ main {
     left: auto;
 }
 
-.form-div {
-    width: 75%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.form-div > form {
-    width: 45%;
-}
-
 .form-button {
     display: flex;
     justify-content: center;
