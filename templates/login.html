@@ -1,38 +1,81 @@
-{% extends "layout.html" %}
+{% extends "layout.html" %} {% block title %} Login {% endblock %} {% block main
+%}
+<div class="container-lg shadow-border p-3 overflow-hidden">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    {% for category, message in messages %}
+      <div class="alert alert-{{ category }} fw-bold text-center" role="alert">
+        {{ ('<i class="fa-solid fa-triangle-exclamation pe-2"></i>' if category == 'danger' else '<i class="fa-solid fa-circle-check"></i>') | safe }}
+        {{ message }}
+      </div>
+    {% endfor %}
+  {% endif %}
+{% endwith %}
 
-{% block title %} Login {% endblock %}
-
-{% block main %}
-    <div class="container-lg shadow-border p-3 overflow-hidden">
-        <div class="row">
-            <div class="col-lg-5 col-md-12 d-flex align-items-center justify-content-center">
-                <form method="post">
-                    <h2 style="text-align: center; text-decoration: underline;" class="my-4">Login User</h2>
-                    <div class="center-flex" style="flex-direction: column;">
-                        <div class="my-3">
-                            <label for="username" class="form-label">Username</label>
-                            <div class="input-group mb-3">
-                                <span class="input-group-text" id="basic-addon1"><i class="fa-solid fa-user"></i></span>
-                                <input type="text" id="username" name="username" required class="form-control">
-                            </div>
-                        </div>
-                        <div class="my-3">
-                            <label for="password" class="form-label">Password</label>
-                            <div class="input-group mb-3">
-                                <span class="input-group-text" id="basic-addon1"><i class="fa-solid fa-lock"></i></span>
-                                <input type="password" id="password" name="password" required class="form-control">
-                            </div>
-                        </div>
-                        <div class="form-button my-3">
-                            <button type="submit" class="btn btn-outline-success px-4">Login</button>
-                        </div>
-                    </div>
-                    <p class="text-secondary text-center">Don't have an account? Signup <a href="{{url_for('register')}}">here</a></p>
-                </form>
+  
+  <div class="row">
+    <div
+      class="col-lg-5 col-md-12 d-flex align-items-center justify-content-center"
+    >
+      <form method="post">
+        <h2 style="text-align: center; text-decoration: underline" class="my-4">
+          Login User
+        </h2>
+        <div class="center-flex" style="flex-direction: column">
+          <div class="my-3">
+            <label for="username" class="form-label">Username</label>
+            <div class="input-group mb-3">
+              <span class="input-group-text" id="basic-addon1"
+                ><i class="fa-solid fa-user"></i
+              ></span>
+              <input
+                type="text"
+                id="username"
+                name="username"
+                minlength="12"
+                maxlength="12"
+                required
+                class="form-control"
+              />
             </div>
-            <div class="col-lg-7 col-md-12">
-                <img src="../static/images/login.jpg" height="100%" width="100%" alt="Login Image" style="object-fit: cover;">
+          </div>
+          <div class="my-3">
+            <label for="password" class="form-label">Password</label>
+            <div class="input-group mb-3">
+              <span class="input-group-text" id="basic-addon1"
+                ><i class="fa-solid fa-lock"></i
+              ></span>
+              <input
+                type="password"
+                id="password"
+                name="password"
+                minlength="3"
+                required
+                class="form-control"
+              />
             </div>
+          </div>
+          <div class="form-button my-3">
+            <button type="submit" class="btn btn-outline-success px-4">
+              Login
+            </button>
+          </div>
         </div>
+        <p class="text-secondary text-center">
+          Don't have an account? Signup
+          <a href="{{url_for('register')}}">here</a>
+        </p>
+      </form>
     </div>
+    <div class="col-lg-7 col-md-12">
+      <img
+        src="../static/images/login.jpg"
+        height="100%"
+        width="100%"
+        alt="Login Image"
+        style="object-fit: cover"
+      />
+    </div>
+  </div>
+</div>
 {% endblock %}

@@ -3,7 +3,7 @@ import os
 from flask import Flask, jsonify, render_template, session, request, redirect, flash, get_flashed_messages, url_for
 from dotenv import load_dotenv
 from pymongo import MongoClient
-from helper import login_required, admin_required
+from helper import login_required, admin_required, is_valid_email
 from bson import ObjectId
 from werkzeug.security import check_password_hash, generate_password_hash
 
@@ -60,7 +60,17 @@ def index():
             details = users['details']
 
             #Validation TODO
+            if perms['email'] and not is_valid_email(email):
+                flash("Invalid email provided", "danger")
+                return redirect(url_for('index'))
             
+            if perms['phone'] and (len(phone) != 10 or not phone.isdigit()):
+                flash("Invalid phone number provided", "danger")
+                return redirect(url_for('index'))
+            
+            if perms['address'] and len(address.strip()) <= 0:
+                flash("Invalid addredd provided.", "danger")
+                return redirect(url_for('index'))
 
             #Update to Database
             perms = permissions.find_one({
@@ -103,12 +113,30 @@ def register():
 
         login_info = users['login_info']
         #Validation
-
+        if not username or not password or not cpassword:
+            flash("All fields are required.", "danger")
+            return redirect(url_for('register'))
+        
+        if len(username) != 12 or not username.isdigit():
+            flash("Aadhar must be 12 digits", "danger")
+            return redirect(url_for('register'))
+        
+        if len(password) < 3:
+            flash("Password must be atleast 3 characters long.", "danger")
+            return redirect(url_for('register'))
+        
+        if password != cpassword:
+            flash("Passwords do not match.", "danger")
+            return redirect(url_for('register'))
+        
+        if login_info.find_one({'username': username}):
+            flash("Account already exists, please login.", "danger")
+            return redirect(url_for('register'))
 
         #Add to Database
         data = {
             'username': username,
-            'password': password,
+            'password': generate_password_hash(password),
             'role': "user",
         }
 
@@ -127,6 +155,7 @@ def register():
         permissions = users['permissions']
         permissions.insert_one(perms)
 
+        flash("Successfully Registered, now please login.", "success")
         return redirect(url_for('login'))
 
     return render_template("register.html")
@@ -141,12 +170,29 @@ def login():
         password = request.form["password"]
 
         login_info = users["login_info"]
+        #Validation
+        if len(username) != 12 or not username.isdigit():
+            flash("Invalid Aadhar Number.", "danger")
+            return redirect(url_for('login'))
+        
+        if len(password) < 3:
+            flash("Password must be atleast 3 characters.", "danger")
+            return redirect(url_for('login'))
+        
         data = login_info.find_one({
             'username': username,
-            'password': password,
         })
-        #Validation
 
+        if not data:
+            flash("Error retrieving account or does not exist", "danger")
+            return redirect(url_for('login'))
+        
+        print(data)
+        print(generate_password_hash(password))
+        
+        if not check_password_hash(data['password'], password):
+            flash("Incorrect Password", "danger")
+            return redirect(url_for('login'))
 
         #Add Session
         session['id'] = str(data['_id'])
@@ -200,6 +246,8 @@ def update_perm():
             value = request.form["value"]
 
             #Validation of field
+            if not value or not value.strip():
+                return jsonify(success=False, message="Provide a valid value"), 400
 
             users["permissions"].update_one(
                 {"_id": user_id},
