@@ -55,13 +55,19 @@
         </div>
         <div class="form-email my-4">
             <label for="email" class="form-label">Email Address</label>
-            <input type="email" class="form-control" id="email" placeholder="name@domain.com" {% if 'email' in perms and
+            <div class="input-group mb-3">
+                <span class="input-group-text" id="basic-addon1"><i class="fa-solid fa-envelope"></i></span>
+                <input type="email" class="form-control" id="email" placeholder="name@domain.com" {% if 'email' in perms and
                 perms['email'] %}required{% endif %} name="email">
+            </div>
         </div>
         <div class="form-phone my-4">
             <label for="phone" class="form-label">Phone Number</label>
-            <input type="tel" class="form-control" id="phone" placeholder="+91" {% if 'phone' in perms and
+            <div class="input-group mb-3">
+                <span class="input-group-text" id="basic-addon1"><i class="fa-solid fa-phone"></i></span>
+                <input type="tel" class="form-control" id="phone" placeholder="+91" {% if 'phone' in perms and
                 perms['phone'] %}required{% endif %} minlength="10" maxlength="10" name="phone">
+            </div>
         </div>
         <div class="form-address my-4">
             <label for="address" class="form-label">Home Address</label>

@@ -3,30 +3,38 @@
 {% block title %} Register {% endblock %}
 
 {% block main %}
-    <div style="width: 50%;">
-        <form method="post">
-            <h2 style="text-align: center; text-decoration: underline;" class="my-4">Registration Form</h2>
-            <div class="center-flex" style="flex-direction: column;">
-                <div class="my-3">
-                    <label for="username" class="form-label">Username</label>
-                    <input type="text" id="username" name="username" required class="form-control">
-                </div>
-                <div class="my-3">
-                    <label for="password" class="form-label">Password</label>
-                    <input type="password" id="password" name="password" required class="form-control">
-                </div>
-                <div class="my-3">
-                    <label for="cpassword" class="form-label">Confirm Password</label>
-                    <input type="password" id="cpassword" name="cpassword" required class="form-control">
-                </div>
-                <div class="form-check my-3">
-                    <input class="form-check-input" type="checkbox" value="" id="check" required>
-                    <label class="form-check-label" for="check">I agree to the Terms and Conditions</label>
-                </div>
-                <div class="form-button px-4">
-                    <button type="submit" class="btn btn-outline-success">Register</button>
-                </div>
+    <div class="container-lg shadow-border overflow-hidden">
+        <div class="row">
+            <div class="col-lg-7 col-md-12 p-0">
+                <img src="../static/images/registration.png" height="100%" width="100%" alt="Registration Image" style="object-fit: cover;">
             </div>
-        </form>
+            <div class="col-lg-5 col-md-12 mb-3">
+                <form method="post">
+                    <h2 style="text-align: center; text-decoration: underline;" class="my-4">Registration Form</h2>
+                    <div class="center-flex" style="flex-direction: column;">
+                        <div class="my-3">
+                            <label for="username" class="form-label">Username</label>
+                            <input type="text" id="username" name="username" required class="form-control">
+                        </div>
+                        <div class="my-3">
+                            <label for="password" class="form-label">Password</label>
+                            <input type="password" id="password" name="password" required class="form-control" data-bs-toggle="tooltip" data-bs-placement="right" title="Enter a secure password with at least 10 characters.">
+                        </div>
+                        <div class="my-3">
+                            <label for="cpassword" class="form-label">Confirm Password</label>
+                            <input type="password" id="cpassword" name="cpassword" required class="form-control" data-bs-toggle="tooltip" data-bs-placement="right" title="Re-enter the same password.">
+                        </div>
+                        <div class="form-check my-3">
+                            <input class="form-check-input" type="checkbox" value="" id="check" required>
+                            <label class="form-check-label" for="check">I agree to the Terms and Conditions</label>
+                        </div>
+                        <div class="form-button px-4 my-3">
+                            <button type="submit" class="btn btn-outline-success">Register</button>
+                        </div>
+                    </div>
+                    <p class="text-secondary text-center mt-2">Already have an account? Login <a href="{{url_for('login')}}">here</a></p>
+                </form>
+            </div>
+        </div>
     </div>
 {% endblock %}

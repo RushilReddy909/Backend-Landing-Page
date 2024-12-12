@@ -21,6 +21,36 @@ main {
     justify-content: center;
 }
 
+.navbar-brand {
+    font-size: 1.5rem !important;
+    position: relative;
+    transition: all 0.2s ease;
+}
+
+.navbar-brand:hover {
+    color: #C33149 !important;
+}
+
+.navbar-brand::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 0.125rem;
+    left: 0;
+    bottom: 0;
+    background-color: #C33149;
+    transition: all 0.3s ease;
+}
+
+.navbar-brand:hover::after {
+    width: 100%;
+}
+
+.navbar-brand:not(:hover)::after {
+    right: 0;
+    left: auto;
+}
+
 .form-div {
     width: 75%;
     display: flex;
@@ -47,9 +77,38 @@ main {
     margin: 0 15px;
 }
 
-#logout-btn, #login-btn, #register-btn {
-    background-color: #F5CB5C;
+.nav-link {
     border-radius: 20px;
-    color: #242423;
+}
+
+.nav-link:hover {
+    color: black !important;
+    background-color: white;
+}
+
+#logout-btn, #login-btn, #register-btn {
+    /* background-color: #F5CB5C; */
+    border-radius: 20px;
+    /* color: #242423; */
     padding: 5px 20px;
+}
+
+.shadow-border {
+    border: 2px solid #ddd;
+    border-radius: 15px;
+    background-color: white;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1),
+                0 1px 3px rgba(0, 0, 0, 0.06);
+    transition: all 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+.shadow-border:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15),
+                0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.required::after {
+    content: '*';
+    color: red;
 }
