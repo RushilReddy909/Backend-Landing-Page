@@ -1,6 +1,8 @@
 from datetime import timedelta
 import os
-from flask import Flask, jsonify, render_template, session, request, redirect, flash, get_flashed_messages, url_for
+from io import StringIO
+import csv
+from flask import Flask, jsonify, render_template, session, request, redirect, flash, get_flashed_messages, url_for, Response
 from dotenv import load_dotenv
 from pymongo import MongoClient
 from helper import login_required, admin_required, is_valid_email, get_client_ip
@@ -289,6 +291,39 @@ def admin():
 
     table_data = list(details.find({}, filters))
     return render_template('admin.html', table_data=table_data, len=len(table_data), filters=filters)
+
+@app.route('/download-csv', methods=["POST"])
+@admin_required
+def download_csv():
+    if request.method == "POST":
+        details = users['details']
+        filters = {}
+
+        for field, value in request.form.items():
+            if value == "yes":
+                filters[field] = 1
+
+        data = list(details.find({}, filters))
+
+        if not filters:
+            return "No filters selected", 400
+        
+        output = StringIO()
+        writer = csv.DictWriter(output, fieldnames=filters.keys())
+        writer.writeheader()
+
+        for row in data:
+            filtered_row = {field: row.get(field, '') for field in filters.keys()}
+            writer.writerow(filtered_row)
+
+        output.seek(0)
+        return Response(
+            output,
+            mimetype="text/csv",
+            headers={
+                "Content-Disposition": "attachment; filename=filtered_data.csv"
+            },
+        )
 
 if __name__ == "__main__":
     app.run(debug=True)
