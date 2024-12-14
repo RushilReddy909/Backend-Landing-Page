@@ -6,25 +6,25 @@ document.addEventListener("DOMContentLoaded", function () {
     if (event.target.checked) {
       //Show Modal
       const modalHTML = `
-                  <div class="modal fade" id="valueModal" tabindex="-1" aria-labelledby="valueModalLabel" aria-hidden="true">
-                      <div class="modal-dialog">
-                          <div class="modal-content">
-                              <div class="modal-header">
-                                  <h5 class="modal-title" id="valueModalLabel">Enter ${field} Value</h5>
-                                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                              </div>
-                              <div class="modal-body">
-                                  <label for="fieldValue" class="form-label">New ${field} Value:</label>
-                                  <input type="text" id="fieldValue" class="form-control" placeholder="Enter your ${field}" />
-                              </div>
-                              <div class="modal-footer">
-                                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                                  <button type="button" class="btn btn-primary" id="saveFieldValue">Save</button>
-                              </div>
-                          </div>
+          <div class="modal fade" id="valueModal" tabindex="-1" aria-labelledby="valueModalLabel" aria-hidden="true">
+              <div class="modal-dialog">
+                  <div class="modal-content">
+                      <div class="modal-header">
+                          <h5 class="modal-title" id="valueModalLabel">Enter ${field} Value</h5>
+                          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                      </div>
+                      <div class="modal-body">
+                          <label for="fieldValue" class="form-label">New ${field} Value:</label>
+                          <input type="text" id="fieldValue" class="form-control" placeholder="Enter your ${field}" />
+                      </div>
+                      <div class="modal-footer">
+                          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                          <button type="button" class="btn btn-primary" id="saveFieldValue">Save</button>
                       </div>
                   </div>
-              `;
+              </div>
+          </div>
+      `;
 
       // Append modal to body
       document.body.insertAdjacentHTML("beforeend", modalHTML);

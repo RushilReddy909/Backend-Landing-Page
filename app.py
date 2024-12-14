@@ -3,9 +3,10 @@ import os
 from flask import Flask, jsonify, render_template, session, request, redirect, flash, get_flashed_messages, url_for
 from dotenv import load_dotenv
 from pymongo import MongoClient
-from helper import login_required, admin_required, is_valid_email
+from helper import login_required, admin_required, is_valid_email, get_client_ip
 from bson import ObjectId
 from werkzeug.security import check_password_hash, generate_password_hash
+from datetime import datetime
 
 load_dotenv() #Load all .env variables
 
@@ -85,6 +86,8 @@ def index():
                     'email': email if perms['email'] else None,
                     'phone': phone if perms['phone'] else None,
                     'address': address if perms['address'] else None,
+                    'time': datetime.now(),
+                    'ip': request.remote_addr if request.remote_addr else get_client_ip(),
                 }
             },
             upsert=True  # If no document matches, create a new one
@@ -187,9 +190,6 @@ def login():
             flash("Error retrieving account or does not exist", "danger")
             return redirect(url_for('login'))
         
-        print(data)
-        print(generate_password_hash(password))
-        
         if not check_password_hash(data['password'], password):
             flash("Incorrect Password", "danger")
             return redirect(url_for('login'))
@@ -272,13 +272,23 @@ def update_perm():
     except Exception as e:
         return jsonify(success=False, message=str(e)), 500
     
-@app.route('/admin')
+@app.route('/admin', methods=["GET", "POST"])
 @admin_required
 def admin():
     details = users['details']
+    fields = ['ip', 'name', 'time', 'email', 'phone', 'address']
+    filters = {field: 1 for field in fields}
 
-    table_data = list(details.find({}, {'name': 1, 'email': 1, 'phone': 1, 'address': 1}))
-    return render_template('admin.html', table_data=table_data, len=len(table_data))
+    #Implement Filters
+    if request.method == "POST":
+        filters.clear()
+        for field, value in request.form.items():
+            field = field.split('-')[0]
+            if value == "yes":
+                filters[field] = 1
+
+    table_data = list(details.find({}, filters))
+    return render_template('admin.html', table_data=table_data, len=len(table_data), filters=filters)
 
 if __name__ == "__main__":
-    app.run()
+    app.run(debug=True)

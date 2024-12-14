@@ -1,5 +1,5 @@
 import re
-from flask import session, redirect, url_for
+from flask import session, redirect, url_for, request
 from functools import wraps
 from dotenv import load_dotenv
 from os import getenv
@@ -40,3 +40,9 @@ def is_valid_email(email):
     if re.match(email_regex, email):
         return True
     return False
+
+def get_client_ip():
+    if not request.environ.get('HTTP_X_FORWARDED_FOR'):
+        return(request.environ['REMOTE_ADDR'])
+    else:
+        return(request.environ['HTTP_X_FORWARDED_FOR']) # if behind a proxy

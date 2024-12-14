@@ -1,34 +1,104 @@
-{% extends "layout.html" %}
-
-{% block title %} Administrator {% endblock %}
-
-{% block main %}
-    <div class="container-lg shadow-border p-3">
-        <div class="text-center mb-5">
-            <h1 style="color: #C33149;">Data Points Table</h1>
-            <p class="text-secondary">Total Entries: {{len}}</p>
-        </div>
-        <div class="table-responsive d-flex justify-content-center">
-            <table class="table-bordered">
-                <thead>
-                    <tr>
-                        <th>Name</th>
-                        <th>Email</th>
-                        <th>Contact Number</th>
-                        <th>Address</th>
-                    </tr>
-                </thead>
-                <tbody class="table-group-divider">
-                    {% for details in table_data %}
-                        <tr>
-                            <td style="width: 20%;">{{details.name if details.name else 'N/A'}}</td>
-                            <td style="width: 25%;">{{details.email if details.email else 'N/A'}}</td>
-                            <td style="width: 15%;">{{details.phone if details.phone else 'N/A'}}</td>
-                            <td style="width: 40%;">{{details.address if details.address else 'N/A'}}</td>
-                        </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
+{% extends "layout.html" %} {% block title %} Administrator {% endblock %} {%
+block main %}
+<div class="container-lg shadow-border p-3">
+  <div class="text-center mb-5">
+    <h1 style="color: #c33149">Data Points Table</h1>
+    <p class="text-secondary">Total Entries: {{len}}</p>
+  </div>
+  <form
+    id="filter-form"
+    method="post"
+    class="d-flex flex-wrap align-items-center mb-3"
+  >
+    <div class="form-check mx-3">
+      <input {% if 'ip' in filters %} checked {% endif %}
+      class="form-check-input" type="checkbox" value="yes" name="ip-check"
+      id="ip-check" />
+      <label class="form-check-label" for="ipcheck"> IP Address </label>
     </div>
+    <div class="form-check mx-3">
+      <input {% if 'name' in filters %} checked {% endif %}
+      class="form-check-input" type="checkbox" value="yes" name="name-check"
+      id="name-check" />
+      <label class="form-check-label" for="name-check"> Name </label>
+    </div>
+    <div class="form-check mx-3">
+      <input {% if 'time' in filters %} checked {% endif %}
+      class="form-check-input" type="checkbox" value="yes" name="time-check"
+      id="time-check" />
+      <label class="form-check-label" for="time-check"> Time </label>
+    </div>
+    <div class="form-check mx-3">
+      <input {% if 'email' in filters %} checked {% endif %}
+      class="form-check-input" type="checkbox" value="yes" name="email-check"
+      id="email-check" />
+      <label class="form-check-label" for="email-check"> Email </label>
+    </div>
+    <div class="form-check mx-3">
+      <input {% if 'phone' in filters %} checked {% endif %}
+      class="form-check-input" type="checkbox" value="yes" name="phone-check"
+      id="phone-check" />
+      <label class="form-check-label" for="phone-check"> Contact Number </label>
+    </div>
+    <div class="form-check mx-3">
+      <input {% if 'address' in filters %} checked {% endif %}
+      class="form-check-input" type="checkbox" value="yes" name="address-check"
+      id="address-check" />
+      <label class="form-check-label" for="address-check"> Address </label>
+    </div>
+    <div class="ms-4">
+      <button type="submit" class="btn btn-outline-warning control-buttons">
+        Filter
+      </button>
+    </div>
+    <div class="d-flex justify-content-end flex-grow-1">
+      <button type="button" class="btn btn-outline-success control-buttons">
+        Download CSV
+      </button>
+    </div>
+  </form>
+  <div class="table-responsive d-flex justify-content-center">
+    <table class="table table-bordered table-hover table-striped">
+      <thead class="table-warning">
+        <tr>
+          {% if 'ip' in filters %}
+          <th>IP Address</th>
+          {% endif %} {% if 'name' in filters %}
+          <th>Name</th>
+          {% endif %} {% if 'time' in filters %}
+          <th>Time (DD/MM/YYYY)</th>
+          {% endif %} {% if 'email' in filters %}
+          <th>Email</th>
+          {% endif %} {% if 'phone' in filters %}
+          <th>Contact Number</th>
+          {% endif %} {% if 'address' in filters %}
+          <th>Address</th>
+          {% endif %}
+        </tr>
+      </thead>
+      <tbody class="table-group-divider table-success">
+        {% for details in table_data %}
+        <tr>
+          {% if 'ip' in filters %}
+          <td>{{ details.ip if details.ip else 'Unknown' }}</td>
+          {% endif %} {% if 'name' in filters %}
+          <td>{{ details.name if details.name else 'N/A' }}</td>
+          {% endif %} {% if 'time' in filters %}
+          <td>
+            {{ details.time.strftime('%d/%m/%Y %I:%M %p') if details.time else
+            'Undefined' }}
+          </td>
+          {% endif %} {% if 'email' in filters %}
+          <td>{{ details.email if details.email else 'N/A' }}</td>
+          {% endif %} {% if 'phone' in filters %}
+          <td>{{ details.phone if details.phone else 'N/A' }}</td>
+          {% endif %} {% if 'address' in filters %}
+          <td>{{ details.address if details.address else 'N/A' }}</td>
+          {% endif %}
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
 {% endblock %}

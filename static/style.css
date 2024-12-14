@@ -75,11 +75,9 @@ main {
     background-color: white;
 }
 
-#logout-btn, #login-btn, #register-btn {
-    /* background-color: #F5CB5C; */
-    border-radius: 20px;
-    /* color: #242423; */
-    padding: 5px 20px;
+.control-buttons {
+    border-radius: 20px !important;
+    padding: 5px 20px !important;
 }
 
 .shadow-border {
